@@ -1,0 +1,61 @@
+.admin-container{
+    background-image: url('C:\Users\vinee\Desktop\DelivaryManagmentApp\front_end\public\backgroundimg.jpg'); /* Replace with your image URL */
+    background-size: cover; 
+    background-repeat: no-repeat;  
+    min-height: 600px;
+    width: 100%;
+}
+.admin-container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+}
+
+.admin-content {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.admin-title {
+  color: #856404;
+}
+
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: transparent;
+}
+
+.orders-table th,
+.orders-table td {
+  border: 1px solid #dee2e6;
+  padding: 8px;
+  text-align: left;
+
+}
+
+.order-row {
+    box-shadow: 2px 3px 4px black;
+   background-color: lightyellow;
+  cursor: pointer;
+}
+
+.order-row.selected {
+  background: #fff3cd;
+}
+
+.assign-section {
+  margin-top: 15px;
+}
+
+.email-input {
+  padding: 8px;
+  width: 250px;
+  margin-right: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+.assign-button{
+    background-color: rgba(0, 0, 255, 0.824);
+}
+

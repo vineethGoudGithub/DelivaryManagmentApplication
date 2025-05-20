@@ -1,0 +1,51 @@
+.add_background{
+  background-image: url('C:\Users\vinee\Desktop\DelivaryManagmentApp\front_end\public\backgroundimg.jpg'); /* Replace with your image URL */
+    background-size: cover; 
+    background-repeat: no-repeat;  
+    min-height: 100vh;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    
+}
+.delivery-container {
+  padding: 20px;
+  font-family: Arial, sans-serif;
+ 
+}
+
+.delivery-title {
+  color: #0c5460;
+}
+
+.delivery-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+  margin-top: 20px;
+}
+
+.delivery-table th,
+.delivery-table td {
+  border: 1px solid #dee2e6;
+  padding: 8px;
+  text-align: left;
+}
+
+.table-header {
+  background-color: #bee5eb;
+}
+
+.deliver-button {
+  padding: 8px 12px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.delivered-label {
+  color: green;
+  font-weight: bold;
+}

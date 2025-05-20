@@ -1,0 +1,101 @@
+@keyframes fadeIn {
+    from {
+        scale: 2;
+        opacity: 0;
+        transform: translateY(100px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.outer-container {
+    background-image: url('C:\Users\vinee\Desktop\DelivaryManagmentApp\front_end\public\backgroundimg.jpg'); /* Replace with your image URL */
+    background-size: cover; 
+    background-repeat: no-repeat;  
+    min-height: 100vh;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    animation: fadeIn 1s ease forwards; 
+}
+
+.disc_container {
+    margin-right: 200px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.disc_container h3 {
+    padding-left: 50px;
+    font-weight: 1000;
+}
+
+.disc_container label {
+    padding-left: 40px;
+    font-size: 100px;
+    font-weight: bold;
+}
+
+.disc_container .kart {
+    padding-left: 50px;
+    color: darkorange;
+}
+
+.inner-container {
+    margin-right: 100px;
+    animation: move; 
+   
+}
+
+.submit-btn {
+    background-color: orange;
+}
+
+.submit-btn:hover {
+    background-color: rgba(255, 166, 0, 0.555);
+}
+/* Media Queries for Responsiveness */
+@media (max-width: 768px) {
+  .outer-container {
+    padding: 0 15px;
+  }
+
+  .inner-container {
+    padding: 20px;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .login-form h2 {
+    font-size: 20px;
+  }
+
+  .input-field {
+    padding: 8px;
+  }
+
+  .submit-btn {
+    padding: 10px;
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .disc_container h3 {
+    font-size: 14px;
+  }
+
+  .login-form h2 {
+    font-size: 18px;
+  }
+
+  .input-field {
+    padding: 6px;
+  }
+
+  .submit-btn {
+    padding: 8px;
+    font-size: 12px;
+  }
+}
