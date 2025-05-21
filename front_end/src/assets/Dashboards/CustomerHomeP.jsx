@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './CustomerHome.css';
 import NavigationBar from '../Config/NavigationBar';
 import About from '../Components/About';
+import Home from '../Components/Home';
+import Explore from '../Components/Explore';
 
 const BASE_URL = 'http://localhost:8998';
 
@@ -82,25 +86,7 @@ const CustomerHomeP = () => {
 
     if (addingToCart) return;
 
-    setAddingToCart(true);
-    setCart(prevCart => {
-      const existingProductIndex = prevCart.findIndex(item => item.productId === product.id);
-      let updatedCart;
-
-      if (existingProductIndex !== -1) {
-        updatedCart = [...prevCart];
-        updatedCart[existingProductIndex].quantity += 1;
-      } else {
-        updatedCart = [...prevCart, {
-          productId: product.id,
-          productName: product.name,
-          quantity: 1,
-        }];
-      }
-
-      localStorage.setItem('cart', JSON.stringify(updatedCart));
-      return updatedCart;
-    });
+    setAddingToCart(true); 
 
     try {
       const response = await fetch(`${BASE_URL}/api/cart/add`, {
@@ -116,15 +102,28 @@ const CustomerHomeP = () => {
         }),
       });
 
-      if (!response.ok) {
-        console.log("Failed to add to cart:", response.status);
-        setCart(prevCart => prevCart.filter(item => item.productId !== product.id));  
-        localStorage.setItem('cart', JSON.stringify(prevCart)); 
-      }
+      if (response.ok) {
+        setCart(prevCart => {
+          const existingProductIndex = prevCart.findIndex(item => item.productId === product.id);
+          let updatedCart;
+
+          if (existingProductIndex !== -1) {
+            updatedCart = [...prevCart];
+            updatedCart[existingProductIndex].quantity += 1;
+          } else {
+            updatedCart = [...prevCart, {
+              productId: product.id,
+              productName: product.name,
+              quantity: 1,
+            }];
+          }
+
+          localStorage.setItem('cart', JSON.stringify(updatedCart));
+          return updatedCart;
+        });
+      } 
     } catch (err) {
       console.log("Error adding to cart:", err);
-      setCart(prevCart => prevCart.filter(item => item.productId !== product.id)); 
-      localStorage.setItem('cart', JSON.stringify(prevCart)); 
     } finally {
       setAddingToCart(false);
     }
@@ -149,9 +148,7 @@ const CustomerHomeP = () => {
           localStorage.setItem('cart', JSON.stringify(updatedCart));
           return updatedCart;
         });
-      } else {
-        console.log("Failed to remove from cart:", response.status); 
-      }
+      } 
     } catch (err) {
       console.log("Error removing from cart:", err);
     }
@@ -185,7 +182,14 @@ const CustomerHomeP = () => {
 
   const placeOrder = async () => {
     if (cart.length === 0) {
-      alert("Cart is empty!");
+      toast.warning("Cart is empty!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
       return;
     }
 
@@ -210,11 +214,18 @@ const CustomerHomeP = () => {
         )
       );
 
-      alert("Order(s) placed successfully!");
+      toast.success("Order placed successfully!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
       setCart([]); 
       localStorage.setItem('cart', JSON.stringify([])); 
     } catch (err) {
-      alert("Failed to place orders.");
+      toast.error("Failed to place order. Please try again.");
       console.log("Error placing orders:", err);
     }
   };
@@ -233,8 +244,24 @@ const CustomerHomeP = () => {
 
   return (
     <>
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
       <NavigationBar />
-      <div className="outer-container1">
+      <Home />
+      <div>
+        <Explore />
+      </div>
+      <div id="products" className="outer-container1">
         <h2>Products</h2>
         {loading ? (
           <p>Loading products...</p>
@@ -258,7 +285,7 @@ const CustomerHomeP = () => {
         )}
       </div>
 
-      <div>
+      <div id="cart">
         <h2>Shopping Cart</h2>
         {cartLoading ? (
           <p>Loading your cart...</p>
@@ -279,13 +306,16 @@ const CustomerHomeP = () => {
                 </div>
               ))
             )}
-            <button onClick={placeOrder} disabled={cart.length === 0 || addingToCart}>Place Order</button>
+            <button className="placeOrder" onClick={placeOrder} disabled={cart.length === 0 || addingToCart}>Place Order</button>
           </div>
         )}
       </div>
 
-      <About />
-      <div className="button22">
+      <div id="about">
+        <About />
+      </div>
+      
+      <div id="contact" className="button22">
         <p>Contact Us</p>
         <button onClick={handleLogout}>Log out</button>
       </div>

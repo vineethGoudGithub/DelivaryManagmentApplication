@@ -1,20 +1,21 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './AdminHome.css';
 
 const BASE_URL = 'http://localhost:8998';
 
-const getAuthHeaders = () => ({
-  'Content-Type': 'application/json',
-});
-
 export const AdminHome = () => {
+  const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [deliveryPersonEmail, setDeliveryPersonEmail] = useState('');
   const [selectedOrderId, setSelectedOrderId] = useState(null);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const fetchOrders = () => {
     fetch(`${BASE_URL}/orders`, {
-      headers: getAuthHeaders(),
+      headers: {
+        'Content-Type': 'application/json',
+      },
     })
       .then(res => res.json())
       .then(setOrders)
@@ -34,7 +35,9 @@ export const AdminHome = () => {
     const status = `Assigned to ${deliveryPersonEmail}`;
     fetch(`${BASE_URL}/orders/${selectedOrderId}/status?status=${encodeURIComponent(status)}`, {
       method: 'PUT',
-      headers: getAuthHeaders(),
+      headers: {
+        'Content-Type': 'application/json',
+      },
     })
       .then(res => {
         if (res.ok) {
@@ -52,11 +55,57 @@ export const AdminHome = () => {
       });
   };
 
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      localStorage.removeItem("token");
+      window.location.href = "/";
+    } catch (error) {
+      console.error('Logout failed:', error);
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
+
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  };
+
   return (
     <div className="admin-container">
-      <div className="admin-content">
-        <h1 className="admin-title">Admin Home</h1>
-        <h2>Orders</h2>
+      <nav className="admin-nav">
+        <div className="nav-logo">Admin Dashboard</div>
+        <div className="nav-links">
+          <button onClick={() => scrollToSection('home')}>Home</button>
+          <button onClick={() => scrollToSection('orders')}>Orders</button>
+          <button 
+            onClick={handleLogout} 
+            disabled={isLoggingOut}
+          >
+            {isLoggingOut ? 'Logging out...' : 'Logout'}
+          </button>
+        </div>
+      </nav>
+
+      {isLoggingOut && (
+        <div className="logout-overlay">
+          <div className="logout-spinner">Logging out...</div>
+        </div>
+      )}
+
+      <div id="home" className="admin-content">
+        <h1 className="admin-title">Admin Dashboard</h1>
+      </div>
+
+      <div id="orders" className="admin-content">
+        <h2>Orders Management</h2>
         <table className="orders-table">
           <thead>
             <tr>

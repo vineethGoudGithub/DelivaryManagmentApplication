@@ -1,13 +1,27 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import './DeliveryPersonPage.css';
 
 const BASE_URL = 'http://localhost:8998';
 
 export const DeliveryHome = ({ deliveryEmail }) => {
+  const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.href = "/";
+  };
+
+  const handleHome = () => {
+    navigate('/delivery');
+  };
 
   const getAuthHeaders = () => ({
     'Content-Type': 'application/json',
+    'Authorization': `Bearer ${localStorage.getItem('token')}`,
   });
 
   const fetchAssignedOrders = () => {
@@ -45,30 +59,44 @@ export const DeliveryHome = ({ deliveryEmail }) => {
     })
       .then(res => {
         if (res.ok) {
-          alert(`Order #${orderId} marked as Delivered`);
+          toast.success(`Order #${orderId} marked as Delivered`);
           fetchAssignedOrders();
         } else {
-          alert('Failed to update order status');
+          toast.error('Failed to update order status');
         }
       })
       .catch(err => {
         console.error('Error updating status:', err);
-        alert('Failed to mark as delivered.');
+        toast.error('Failed to mark as delivered');
       });
   };
 
   return (
-    <div className='add_background'>
-      <div className="delivery-container">
-        <h1 className="delivery-title">Delivery Dashboard</h1>
-        <h2>Orders Assigned to You</h2>
+    <div className="delivery-person-container">
+      <nav className="delivery-nav">
+        <div className="nav-logo">
+          <h1>Delivery Dashboard</h1>
+        </div>
+        <div className="nav-links">
+          <button className="nav-button" onClick={handleHome}>
+            Home
+          </button>
+          <button className="nav-button" onClick={handleLogout}>
+            Logout
+          </button>
+        </div>
+      </nav>
+
+      <div className="delivery-content">
+        <ToastContainer />
+        <h1 className="delivery-title">Orders Assigned to You</h1>
 
         {orders.length === 0 ? (
-          <p>No orders assigned currently.</p>
+          <p className="no-orders">No orders assigned currently.</p>
         ) : (
-          <table className="delivery-table">
+          <table className="orders-table">
             <thead>
-              <tr className="table-header">
+              <tr>
                 <th>Order ID</th>
                 <th>Product ID</th>
                 <th>Customer Email</th>
@@ -78,7 +106,7 @@ export const DeliveryHome = ({ deliveryEmail }) => {
             </thead>
             <tbody>
               {orders.map(order => (
-                <tr key={order.id}>
+                <tr key={order.id} className="order-row">
                   <td>{order.id}</td>
                   <td>{order.productId}</td>
                   <td>{order.customerEmail}</td>

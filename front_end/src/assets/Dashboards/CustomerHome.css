@@ -1,45 +1,80 @@
 .outer-container1 {
-    background-image: url('C:\Users\vinee\Desktop\DelivaryManagmentApp\front_end\public\backgroundimg.jpg'); /* Replace with your image URL */
-    background-size: cover; 
-    background-repeat: no-repeat;  
+    background-color: #fff9e6;
     min-height: 600px;
     width: 100%;
     display: flex;
     flex-direction: row;
+    padding: 2rem;
 }
-.shoppingcart{
-    padding-top: 200px;
+.shoppingcart {
+    padding: 2rem;
     margin-left: 50px;
     box-sizing: border-box;
-    box-shadow: 0px 0px 1px black;
-    padding: 20px;
+    box-shadow: 0 4px 15px rgba(255, 153, 51, 0.1);
+    background-color: white;
+    border-radius: 8px;
 }
 .items {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(3, auto);   
-    gap: 10px; 
-    box-shadow: 2px 3px 4px black;  
-    background-color:rgba(255, 255, 255, 0.694) ;    
-    padding: 20px;                   
+    gap: 20px; 
+    box-shadow: 0 4px 15px rgba(255, 153, 51, 0.2);  
+    background-color: white;    
+    padding: 2rem;
+    border-radius: 8px;                   
 }
-.buttonsq{
-    background-color: darkorange;
+.items > div {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(255, 153, 51, 0.1);
+    transition: transform 0.3s ease;
 }
-.buttonsq:hover{
-    background-color: orange;
+.items > div:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(255, 153, 51, 0.2);
 }
-.button22 button{ 
-
-    background-color: darkorange ;
- color: black;
-    box-sizing: border-box;
-   
-}
-.button22 button:hover{
-    background-color: orange;
+.buttonsq {
+    background-color: #ff9933;
     color: white;
-
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    width: 100%;
+    margin-top: 1rem;
+}
+.buttonsq:hover {
+    background-color: #ff8c00;
+    transform: translateY(-2px);
+}
+.button22 {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 1rem 2rem;
+    background-color: white;
+    box-shadow: 0 -2px 10px rgba(255, 153, 51, 0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.button22 button { 
+    background-color: #ff9933;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+.button22 button:hover {
+    background-color: #ff8c00;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 153, 51, 0.2);
 }
 
 

@@ -1,61 +1,166 @@
-.admin-container{
-    background-image: url('C:\Users\vinee\Desktop\DelivaryManagmentApp\front_end\public\backgroundimg.jpg'); /* Replace with your image URL */
+.admin-container {
     background-size: cover; 
     background-repeat: no-repeat;  
-    min-height: 600px;
+    min-height: 100vh;
     width: 100%;
+    background-color: #fff9e6;
 }
+
 .admin-container {
-  padding: 20px;
-  font-family: Arial, sans-serif;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+.admin-nav {
+    background-color: #ff9933;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.nav-logo {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.nav-links {
+    display: flex;
+    gap: 1rem;
+}
+
+.nav-links button {
+    background-color: transparent;
+    color: white;
+    border: 2px solid white;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.nav-links button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .admin-content {
-  max-width: 800px;
-  margin: 0 auto;
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
 }
 
 .admin-title {
-  color: #856404;
+    color: #ff8c00;
+    margin-bottom: 2rem;
+    font-size: 2rem;
 }
 
 .orders-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-  background-color: transparent;
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2rem 0;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
 }
 
 .orders-table th,
 .orders-table td {
-  border: 1px solid #dee2e6;
-  padding: 8px;
-  text-align: left;
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #ffe6cc;
+}
 
+.orders-table th {
+    background-color:orange;
+    color: white;
 }
 
 .order-row {
-    box-shadow: 2px 3px 4px black;
-   background-color: lightyellow;
-  cursor: pointer;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.order-row:hover {
+    background-color: #fff5e6;
 }
 
 .order-row.selected {
-  background: #fff3cd;
+    background-color: #ffe6cc;
 }
 
 .assign-section {
-  margin-top: 15px;
+    margin-top: 2rem;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
 }
 
 .email-input {
-  padding: 8px;
-  width: 250px;
-  margin-right: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+    flex: 1;
+    padding: 0.75rem;
+    border: 2px solid #ffb366;
+    border-radius: 4px;
+    font-size: 1rem;
 }
-.assign-button{
-    background-color: rgba(0, 0, 255, 0.824);
+
+.assign-button {
+    background-color: #ff9933;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.assign-button:hover:not(:disabled) {
+    background-color: #ff8c00;
+    transform: translateY(-2px);
+}
+
+.assign-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+}
+
+
+.nav-links button:disabled {
+    background-color: #000000;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+#home, #orders {
+    scroll-margin-top: 80px;
+}
+
+@media screen and (max-width: 768px) {
+    .admin-nav {
+        flex-direction: column;
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .nav-links {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .assign-section {
+        flex-direction: column;
+    }
+
+    .orders-table {
+        font-size: 0.9rem;
+    }
 }
 
