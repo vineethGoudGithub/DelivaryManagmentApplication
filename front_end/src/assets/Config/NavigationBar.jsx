@@ -7,8 +7,7 @@ const NavigationBar = () => {
     const element = document.getElementById(sectionId);
     if (element) {
       element.scrollIntoView({ 
-        behavior: 'smooth',
-        block: 'start'
+        behavior: 'smooth'
       });
     }
   };
@@ -16,7 +15,10 @@ const NavigationBar = () => {
   return (
     <nav className="navbar">
       <ul>
-        <li><Link to="/CustomerHome">Home</Link></li>
+        <li><a href="#MainHome" onClick={(e) => {
+          e.preventDefault();
+          scrollToSection('MainHome');
+        }}>Home</a></li>
         <li><a href="#about" onClick={(e) => {
           e.preventDefault();
           scrollToSection('about');

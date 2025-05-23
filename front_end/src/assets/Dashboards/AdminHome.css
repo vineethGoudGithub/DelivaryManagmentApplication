@@ -63,6 +63,24 @@
 }
 
 .orders-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.orders-table th,
+.orders-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.orders-table th {
+  background-color: #f8f9fa;
+  font-weight: 500;
+}
+
+.orders-table {
     width: 100%;
     border-collapse: collapse;
     margin: 2rem 0;
@@ -85,7 +103,7 @@
 
 .order-row {
     cursor: pointer;
-    transition: background-color 0.2s ease;
+    transition: background-color 0.3s ease;
 }
 
 .order-row:hover {
@@ -93,33 +111,78 @@
 }
 
 .order-row.selected {
-    background-color: #ffe6cc;
+    background-color: #e9ecef;
+}
+
+.order-row.assigned {
+    background-color: #f8f9fa;
+    cursor: not-allowed;
+}
+
+.order-row.unassigned {
+    background-color: #fff;
+    cursor: pointer;
+}
+
+.order-row td {
+  padding: 12px;
+  vertical-align: middle;
+}
+
+.assign-action {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.assign-action input {
+  padding: 6px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  width: 200px;
+}
+
+.status-assigned {
+  color: #28a745;
+  font-weight: 500;
+}
+
+.status-pending {
+  color: #ffc107;
+  font-weight: 500;
+}
+
+.order-row.unassigned:hover {
+    background-color: #fff9e6;
+}
+
+.order-row:not(.assigned):hover {
+    background-color: #fff9e6;
+    cursor: pointer;
 }
 
 .assign-section {
-    margin-top: 2rem;
-    display: flex;
-    gap: 1rem;
-    align-items: center;
+  margin-top: 20px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
 .email-input {
-    flex: 1;
-    padding: 0.75rem;
-    border: 2px solid #ffb366;
-    border-radius: 4px;
-    font-size: 1rem;
+  padding: 8px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  flex-grow: 1;
+  max-width: 300px;
 }
 
 .assign-button {
-    background-color: #ff9933;
-    color: white;
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    font-weight: 500;
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
 }
 
 .assign-button:hover:not(:disabled) {
@@ -128,8 +191,8 @@
 }
 
 .assign-button:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
+  background-color: #ccc;
+  cursor: not-allowed;
 }
 
 

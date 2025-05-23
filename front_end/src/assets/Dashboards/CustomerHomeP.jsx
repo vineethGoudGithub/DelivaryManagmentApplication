@@ -6,15 +6,37 @@ import NavigationBar from '../Config/NavigationBar';
 import About from '../Components/About';
 import Home from '../Components/Home';
 import Explore from '../Components/Explore';
+import { jwtDecode } from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
 
 const BASE_URL = 'http://localhost:8998';
 
 const CustomerHomeP = () => {
+  const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [cart, setCart] = useState([]);
   const [loading, setLoading] = useState(true);
   const [cartLoading, setCartLoading] = useState(true);
-  const [addingToCart, setAddingToCart] = useState(false); 
+  const [addingToCart, setAddingToCart] = useState(false);
+  const [customerEmail, setCustomerEmail] = useState(null);
+
+  const saveCartToLocalStorage = (updatedCart) => {
+    localStorage.setItem('cart', JSON.stringify(updatedCart));
+    setCart(updatedCart);
+  };
+
+  const getEmailFromToken = () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return null;
+      
+      const decoded = jwtDecode(token);
+      return decoded.sub;
+    } catch (error) {
+      console.error('Token decode error:', error);
+      return null;
+    }
+  };
 
   const fetchCart = async () => {
     const token = localStorage.getItem("token");
@@ -22,7 +44,6 @@ const CustomerHomeP = () => {
 
     setCartLoading(true);
     try {
-
       const storedCart = localStorage.getItem('cart');
       if (storedCart) {
         setCart(JSON.parse(storedCart));  
@@ -38,13 +59,13 @@ const CustomerHomeP = () => {
         if (response.ok) {
           const cartData = await response.json();
           console.log("Fetched Cart Data:", cartData);
-          setCart(cartData);
-          localStorage.setItem('cart', JSON.stringify(cartData)); 
+          saveCartToLocalStorage(cartData);
         } else {
           console.log("Failed to fetch cart data:", response.status);
           setCart([]);
         }
       }
+   
     } catch (err) {
       console.log("Error fetching cart:", err);
       setCart([]);
@@ -83,10 +104,9 @@ const CustomerHomeP = () => {
   const addToCart = async (product) => {
     const token = localStorage.getItem("token");
     const customerEmail = localStorage.getItem("email");
-
+ 
     if (addingToCart) return;
-
-    setAddingToCart(true); 
+    setAddingToCart(true);
 
     try {
       const response = await fetch(`${BASE_URL}/api/cart/add`, {
@@ -118,12 +138,13 @@ const CustomerHomeP = () => {
             }];
           }
 
-          localStorage.setItem('cart', JSON.stringify(updatedCart));
+          saveCartToLocalStorage(updatedCart);
           return updatedCart;
         });
       } 
     } catch (err) {
       console.log("Error adding to cart:", err);
+      toast.error("Failed to add item to cart. Please try again.");
     } finally {
       setAddingToCart(false);
     }
@@ -145,7 +166,7 @@ const CustomerHomeP = () => {
       if (response.ok) {
         setCart(prevCart => {
           const updatedCart = prevCart.filter(item => item.productId !== productId);
-          localStorage.setItem('cart', JSON.stringify(updatedCart));
+          saveCartToLocalStorage(updatedCart);
           return updatedCart;
         });
       } 
@@ -162,7 +183,7 @@ const CustomerHomeP = () => {
         }
         return item;
       });
-      localStorage.setItem('cart', JSON.stringify(updatedCart)); 
+      saveCartToLocalStorage(updatedCart);
       return updatedCart;
     });
   };
@@ -175,35 +196,31 @@ const CustomerHomeP = () => {
         }
         return item;
       }).filter(item => item.quantity > 0); 
-      localStorage.setItem('cart', JSON.stringify(updatedCart)); 
+      saveCartToLocalStorage(updatedCart);
       return updatedCart;
     });
   };
 
   const placeOrder = async () => {
     if (cart.length === 0) {
-      toast.warning("Cart is empty!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
+      toast.warning("Cart is empty!");
       return;
     }
 
-    const token = localStorage.getItem("token");
-    const customerEmail = localStorage.getItem("email");
+    if (!customerEmail) {
+      toast.error("Please login first");
+      navigate('/');
+      return;
+    }
 
     try {
-      await Promise.all(
+      const responses = await Promise.all(
         cart.map(item =>
           fetch(`${BASE_URL}/orders`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${token}`,
+              "Authorization": `Bearer ${localStorage.getItem('token')}`,
             },
             body: JSON.stringify({
               productId: item.productId,
@@ -213,20 +230,18 @@ const CustomerHomeP = () => {
           })
         )
       );
+     
+   
+      const orders = await Promise.all(responses.map(res => res.json()));
+      const orderIds = orders.map(order => order.id);
+      console.log("Created order IDs:", orderIds);
 
-      toast.success("Order placed successfully!", {
-        position: "top-right",
-        autoClose: 3000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-      });
-      setCart([]); 
-      localStorage.setItem('cart', JSON.stringify([])); 
+      toast.success("Order placed successfully!");
+      setCart([]);
+      saveCartToLocalStorage([]);
     } catch (err) {
       toast.error("Failed to place order. Please try again.");
-      console.log("Error placing orders:", err);
+      console.error("Error placing orders:", err);
     }
   };
 
@@ -238,9 +253,16 @@ const CustomerHomeP = () => {
   };
 
   useEffect(() => {
+    const email = getEmailFromToken();
+    if (!email) {
+      toast.error('Please login first');
+      navigate('/');
+      return;
+    }
+    setCustomerEmail(email);
     fetchProducts();
     fetchCart();
-  }, []);
+  }, [navigate]);
 
   return (
     <>
@@ -257,7 +279,9 @@ const CustomerHomeP = () => {
         theme="light"
       />
       <NavigationBar />
-      <Home />
+      <div id="MainHome">
+        <Home />
+      </div>
       <div>
         <Explore />
       </div>

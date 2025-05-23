@@ -9,9 +9,10 @@
     
 }
 .delivery-container {
-  padding: 20px;
-  font-family: Arial, sans-serif;
- 
+    background-color: #fff9e6;
+    min-height: 100vh;
+    padding: 20px;
+    font-family: Arial, sans-serif;
 }
 
 .delivery-person-container {
@@ -20,18 +21,23 @@
 }
 
 .delivery-nav {
-    background-color: orange;
+    background-color: #ff9933;
     padding: 1rem 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 2px 10px black;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
 
-.nav-logo h1 {
+.nav-logo {
     color: white;
-    margin: 0;
     font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.nav-info {
+    color: white;
+    font-size: 1rem;
 }
 
 .nav-links {
@@ -39,20 +45,19 @@
     gap: 1rem;
 }
 
-.nav-button {
+.nav-links button {
     background-color: transparent;
     color: white;
     border: 2px solid white;
-    padding: 0.5rem 1.5rem;
+    padding: 0.5rem 1rem;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 1rem;
     transition: all 0.3s ease;
 }
 
-.nav-button:hover {
-    background-color: white;
-    color: darkorange;
+.nav-links button:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .delivery-content {
@@ -61,11 +66,11 @@
     padding: 2rem;
     background-color: white;
     border-radius: 8px;
-    box-shadow: 0 4px 15px rgba(0, 0, 139, 0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .delivery-title {
-    color:orange;
+    color: #ff8c00;
     margin-bottom: 2rem;
     font-size: 2rem;
 }
@@ -73,7 +78,7 @@
 .orders-table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 1.5rem;
+    margin: 2rem 0;
     background-color: white;
     border-radius: 8px;
     overflow: hidden;
@@ -83,13 +88,12 @@
 .orders-table td {
     padding: 1rem;
     text-align: left;
-    border-bottom: 1px solid #e6f3ff;
+    border-bottom: 1px solid #ffe6cc;
 }
 
 .orders-table th {
-    background-color: #4169e1;
+    background-color: orange;
     color: white;
-    font-weight: 500;
 }
 
 .order-row {
@@ -101,18 +105,9 @@
 }
 
 .deliver-button {
-  padding: 8px 12px;
-  background-color:orange;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.deliver-button {
-    background-color: orange;
+    padding: 8px 16px;
+    background-color: #28a745;
     color: white;
-    padding: 0.5rem 1rem;
     border: none;
     border-radius: 4px;
     cursor: pointer;
@@ -120,7 +115,7 @@
 }
 
 .deliver-button:hover {
-    background-color: darkorange;
+    background-color: #218838;
     transform: translateY(-2px);
 }
 
@@ -134,6 +129,12 @@
     font-weight: bold;
 }
 
+.loading, .no-orders {
+    text-align: center;
+    padding: 2rem;
+    color: #666;
+}
+
 .no-orders {
     text-align: center;
     color: #666;
@@ -144,7 +145,10 @@
     border-radius: 8px;
 }
 
-/* Responsive Design */
+#home, #orders {
+    scroll-margin-top: 80px;
+}
+
 @media screen and (max-width: 768px) {
     .delivery-nav {
         flex-direction: column;

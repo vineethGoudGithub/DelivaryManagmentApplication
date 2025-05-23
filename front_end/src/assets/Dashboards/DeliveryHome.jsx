@@ -1,61 +1,122 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
+import { jwtDecode } from 'jwt-decode';
 import 'react-toastify/dist/ReactToastify.css';
 import './DeliveryPersonPage.css';
 
 const BASE_URL = 'http://localhost:8998';
 
-export const DeliveryHome = ({ deliveryEmail }) => {
+export const DeliveryHome = () => {
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [deliveryEmail, setDeliveryEmail] = useState(null);
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    window.location.href = "/";
+  const getEmailFromToken = () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) return null;
+      
+      const decoded = jwtDecode(token);
+      return decoded.sub;
+    } catch (error) {
+      console.error('Token decode error:', error);
+      return null;
+    }
   };
 
-  const handleHome = () => {
-    navigate('/delivery');
-  };
+  const fetchAssignedOrders = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        toast.error('Authentication required');
+        navigate('/');
+        return;
+      }
 
-  const getAuthHeaders = () => ({
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${localStorage.getItem('token')}`,
-  });
+      const email = getEmailFromToken();
+      if (!email) {
+        toast.error('Invalid authentication');
+        navigate('/');
+        return;
+      }
 
-  const fetchAssignedOrders = () => {
-    fetch(`${BASE_URL}/orders`, {
-      headers: getAuthHeaders(),
-    })
-      .then(res => {
-        if (!res.ok) {
-          throw new Error(`HTTP error! Status: ${res.status}`);
-        }
-        return res.json();
-      })
-      .then(data => {
-        const assigned = data.filter(
-          order =>
-            order.status === `Assigned to ${deliveryEmail}` ||
-            order.status === 'Pending'
-        );
-        setOrders(assigned);
-      })
-      .catch(err => {
-        console.error('Error fetching orders:', err);
-        alert('Failed to fetch assigned orders.');
+      setDeliveryEmail(email);
+
+      const response = await fetch(`${BASE_URL}/orders`, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`,
+        },
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      console.log('All orders:', data); // Debug log
+
+      const assigned = data.filter(order => 
+        order.status === `Assigned to ${email}` && 
+        order.status !== 'Delivered'
+      );
+
+      console.log('Filtered orders:', assigned); // Debug log
+      setOrders(assigned);
+    } catch (error) {
+      console.error('Error fetching orders:', error);
+      toast.error('Failed to fetch orders');
+    } finally {
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
+    const email = getEmailFromToken();
+    if (!email) {
+      toast.error('Please login first');
+      navigate('/');
+      return;
+    }
+
     fetchAssignedOrders();
-  }, [deliveryEmail]);
+    const interval = setInterval(fetchAssignedOrders, 30000);
+    return () => clearInterval(interval);
+  }, [navigate]);
+
+  const handleLogout = async () => {
+    setIsLoggingOut(true);
+    try {
+      localStorage.removeItem("token");
+      window.location.href = "/";
+    } catch (error) {
+      console.error('Logout failed:', error);
+      toast.error('Logout failed');
+    } finally {
+      setIsLoggingOut(false);
+    }
+  };
+
+  const scrollToSection = (sectionId) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'start'
+      });
+    }
+  };
 
   const markAsDelivered = (orderId) => {
     fetch(`${BASE_URL}/orders/${orderId}/status?status=Delivered`, {
       method: 'PUT',
-      headers: getAuthHeaders(),
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+      },
     })
       .then(res => {
         if (res.ok) {
@@ -78,20 +139,34 @@ export const DeliveryHome = ({ deliveryEmail }) => {
           <h1>Delivery Dashboard</h1>
         </div>
         <div className="nav-links">
-          <button className="nav-button" onClick={handleHome}>
+          <button 
+            className="nav-button" 
+            onClick={() => scrollToSection('home')}
+          >
             Home
           </button>
-          <button className="nav-button" onClick={handleLogout}>
-            Logout
+          <button 
+            className="nav-button" 
+            onClick={handleLogout}
+            disabled={isLoggingOut}
+          >
+            {isLoggingOut ? 'Logging out...' : 'Logout'}
           </button>
         </div>
+        {deliveryEmail && (
+          <div className="user-info">
+            Logged in as: {deliveryEmail}
+          </div>
+        )}
       </nav>
 
-      <div className="delivery-content">
+      <div id="home" className="delivery-content">
         <ToastContainer />
         <h1 className="delivery-title">Orders Assigned to You</h1>
 
-        {orders.length === 0 ? (
+        {loading ? (
+          <p className="loading">Loading orders...</p>
+        ) : orders.length === 0 ? (
           <p className="no-orders">No orders assigned currently.</p>
         ) : (
           <table className="orders-table">

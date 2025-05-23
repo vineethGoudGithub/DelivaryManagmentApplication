@@ -1,5 +1,5 @@
 .outer-container1 {
-    background-color: #fff9e6;
+    background-color: #ffffff;
     min-height: 600px;
     width: 100%;
     display: flex;
@@ -10,7 +10,7 @@
     padding: 2rem;
     margin-left: 50px;
     box-sizing: border-box;
-    box-shadow: 0 4px 15px rgba(255, 153, 51, 0.1);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
     background-color: white;
     border-radius: 8px;
 }
